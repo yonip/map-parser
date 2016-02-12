@@ -50,11 +50,40 @@ public class Inner {
         }
     }
 
+    public Map<String, String> getComponents() {
+        Map<String, String> map = new HashMap<>();
+        map.putAll(this.components);
+        if (parent == null) {
+            return map;
+        }
+        map.putAll(parent.getComponents());
+        return map;
+    }
+
+    /**
+     * creates a JSONObject based on the contents of this inner-class representation
+     * <br/><code>{</code>
+     * <br/><code>  "component-name": {//the component's bean},</code>
+     * <br/><code>  "instances": {}</code>
+     * <br/><code>}</code>
+     * <br/> where <code>component-name</code> is the name of a field for this inner class
+     * <br/> this creates the most verbose tree possible
+     * <br/> if the component is a primitive (specifically <code>int</code>, <code>double</code> and <code>boolean</code>)
+     * the bean object is simply replaced by a string of the primitive (eg <code>"int"</code> for an <code>int</code>)
+     * <p/>
+     * here is, for example, the JSONObject representation for a PIDMotor:
+     * <br/><code>{</code>
+     * <br/><code>  "PORT": {//the component's bean},</code>
+     * <br/><code>  "instances": {}</code>
+     * <br/><code>}</code>
+     * @return a JSONObject
+     * @throws JSONException if somehow formatting broke. which should ever happen
+     */
     public JSONObject toJson() throws JSONException {
             jsonObject = new JSONObject();
-            Set<String> compKeys = components.keySet();
+            Set<String> compKeys = getComponents().keySet();
             for (String key : compKeys) {
-                String type = components.get(key);
+                String type = getComponents().get(key);
                 if (type.contains("[")) {
                     type = type.split("\\[")[0];
                 }

@@ -1,178 +1,153 @@
 {
   "DriveMap": {
-    "TankDriveMap": {
-      "components": {
-        "ClusterPID": {
-          "Encoder": {
+    "TankDriveMap": {"components": {
+      "ClusterPID": {
+        "Encoder": {
+          "a": "int",
+          "b": "int",
+          "dpp": "double",
+          "instances": {"encoder": {
             "a": "int",
             "b": "int",
-            "dpp": "double",
-            "instances": {
-              "encoder": {
-                "a": "int",
-                "b": "int",
-                "dpp": "double"
-              }
-            }
+            "dpp": "double"
+          }}
+        },
+        "MotorCluster": {
+          "INVERTED": "boolean",
+          "Motor": {
+            "INVERTED": "boolean",
+            "PORT": "int",
+            "instances": {"motors": {
+              "INVERTED": "boolean",
+              "PORT": "int"
+            }}
           },
-          "MotorCluster": {
+          "instances": {"cluster": {
             "INVERTED": "boolean",
             "Motor": {
               "INVERTED": "boolean",
               "PORT": "int",
-              "instances": {
-                "motors": {
+              "instances": {"motors": {
+                "INVERTED": "boolean",
+                "PORT": "int"
+              }}
+            }
+          }}
+        },
+        "d": "double",
+        "i": "double",
+        "instances": {
+          "leftCluster": {
+            "Encoder": {
+              "a": "int",
+              "b": "int",
+              "dpp": "double",
+              "instances": {"encoder": {
+                "a": "int",
+                "b": "int",
+                "dpp": "double"
+              }}
+            },
+            "MotorCluster": {
+              "INVERTED": "boolean",
+              "Motor": {
+                "INVERTED": "boolean",
+                "PORT": "int",
+                "instances": {"motors": {
                   "INVERTED": "boolean",
                   "PORT": "int"
-                }
-              }
-            },
-            "instances": {
-              "cluster": {
+                }}
+              },
+              "instances": {"cluster": {
                 "INVERTED": "boolean",
                 "Motor": {
                   "INVERTED": "boolean",
                   "PORT": "int",
-                  "instances": {
-                    "motors": {
-                      "INVERTED": "boolean",
-                      "PORT": "int"
-                    }
-                  }
+                  "instances": {"motors": {
+                    "INVERTED": "boolean",
+                    "PORT": "int"
+                  }}
                 }
-              }
-            }
+              }}
+            },
+            "d": "double",
+            "i": "double",
+            "p": "double"
           },
-          "instances": {
-            "leftCluster": {
-              "Encoder": {
+          "rightCluster": {
+            "Encoder": {
+              "a": "int",
+              "b": "int",
+              "dpp": "double",
+              "instances": {"encoder": {
                 "a": "int",
                 "b": "int",
-                "dpp": "double",
-                "instances": {
-                  "encoder": {
-                    "a": "int",
-                    "b": "int",
-                    "dpp": "double"
-                  }
-                }
-              },
-              "MotorCluster": {
-                "INVERTED": "boolean",
-                "Motor": {
-                  "INVERTED": "boolean",
-                  "PORT": "int",
-                  "instances": {
-                    "motors": {
-                      "INVERTED": "boolean",
-                      "PORT": "int"
-                    }
-                  }
-                },
-                "instances": {
-                  "cluster": {
-                    "INVERTED": "boolean",
-                    "Motor": {
-                      "INVERTED": "boolean",
-                      "PORT": "int",
-                      "instances": {
-                        "motors": {
-                          "INVERTED": "boolean",
-                          "PORT": "int"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+                "dpp": "double"
+              }}
             },
-            "rightCluster": {
-              "Encoder": {
-                "a": "int",
-                "b": "int",
-                "dpp": "double",
-                "instances": {
-                  "encoder": {
-                    "a": "int",
-                    "b": "int",
-                    "dpp": "double"
-                  }
-                }
+            "MotorCluster": {
+              "INVERTED": "boolean",
+              "Motor": {
+                "INVERTED": "boolean",
+                "PORT": "int",
+                "instances": {"motors": {
+                  "INVERTED": "boolean",
+                  "PORT": "int"
+                }}
               },
-              "MotorCluster": {
+              "instances": {"cluster": {
                 "INVERTED": "boolean",
                 "Motor": {
                   "INVERTED": "boolean",
                   "PORT": "int",
-                  "instances": {
-                    "motors": {
-                      "INVERTED": "boolean",
-                      "PORT": "int"
-                    }
-                  }
-                },
-                "instances": {
-                  "cluster": {
+                  "instances": {"motors": {
                     "INVERTED": "boolean",
-                    "Motor": {
-                      "INVERTED": "boolean",
-                      "PORT": "int",
-                      "instances": {
-                        "motors": {
-                          "INVERTED": "boolean",
-                          "PORT": "int"
-                        }
-                      }
-                    }
-                  }
+                    "PORT": "int"
+                  }}
                 }
-              }
-            }
+              }}
+            },
+            "d": "double",
+            "i": "double",
+            "p": "double"
           }
         },
-        "SPEED": "double"
-      }
-    },
+        "p": "double"
+      },
+      "SPEED": "double"
+    }},
     "components": {}
   },
   "MechanismMap": {
-    "BreachMap": {
-      "components": {
-        "LimitSwitch": {
-          "PORT": "int",
-          "instances": {
-            "lower": {"PORT": "int"},
-            "upper": {"PORT": "int"}
-          }
-        },
-        "Motor": {
-          "INVERTED": "boolean",
-          "PORT": "int",
-          "instances": {
-            "motor": {
-              "INVERTED": "boolean",
-              "PORT": "int"
-            }
-          }
+    "BreachMap": {"components": {
+      "LimitSwitch": {
+        "PORT": "int",
+        "instances": {
+          "lower": {"PORT": "int"},
+          "upper": {"PORT": "int"}
         }
-      }
-    },
-    "IntakeMap": {
-      "components": {
-        "INPUT_SPEED": "double",
-        "Motor": {
+      },
+      "Motor": {
+        "INVERTED": "boolean",
+        "PORT": "int",
+        "instances": {"motor": {
           "INVERTED": "boolean",
-          "PORT": "int",
-          "instances": {
-            "motor": {
-              "INVERTED": "boolean",
-              "PORT": "int"
-            }
-          }
-        },
-        "OUTPUT_SPEED": "double"
+          "PORT": "int"
+        }}
       }
-    },
+    }},
+    "IntakeMap": {"components": {
+      "INPUT_SPEED": "double",
+      "Motor": {
+        "INVERTED": "boolean",
+        "PORT": "int",
+        "instances": {"motor": {
+          "INVERTED": "boolean",
+          "PORT": "int"
+        }}
+      },
+      "OUTPUT_SPEED": "double"
+    }},
     "components": {}
   },
   "components": {}
