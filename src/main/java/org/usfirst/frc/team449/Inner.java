@@ -101,13 +101,13 @@ public class Inner {
      * @see Classer#toJson()
      * @see Classer
      */
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson() throws JSONException { // TODO: inline documentation
             jsonObject = new JSONObject();
             Set<String> compKeys = getComponents().keySet();
             for (String key : compKeys) {
                 String type = getComponents().get(key);
                 if (type.contains("[")) {
-                    type = type.split("\\[")[0];
+                    type = type.split("\\[")[0]; // TODO: handle arrays correctly
                 }
                 if (type.equals("double") || type.equals("boolean") || type.equals("int")) {
                     jsonObject.put(key, type);

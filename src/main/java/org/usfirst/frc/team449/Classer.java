@@ -31,7 +31,7 @@ public class Classer {
      */
     protected Map<String, Inner> inners;
     /**
-     *
+     * the name of this Subsystem Map
      */
     protected String name;
 
@@ -115,7 +115,7 @@ public class Classer {
     /**
      * creates a JSONObject based on the contents of this Subsystem Map
      * <br/><code>{</code>
-     * <br/><code>  "child-name": {//the component's bean},</code>
+     * <br/><code>  "child-name": {//the child's bean},</code>
      * <br/><code>  "components": {}</code>
      * <br/><code>}</code>
      * <br/> where <code>child-name</code> is the name of a subclass of this Map and <code>components</code> holds the beans
@@ -128,7 +128,7 @@ public class Classer {
      * @see Inner#toJson()
      * @see Inner
      */
-    protected JSONObject toJson() throws JSONException {
+    protected JSONObject toJson() throws JSONException { // TODO: inline documnentation
         JSONObject jo = new JSONObject();
         Set<String> childKeys = children.keySet();
         for (String  key : childKeys) {
