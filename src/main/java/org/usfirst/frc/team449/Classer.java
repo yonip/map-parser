@@ -9,8 +9,9 @@ import org.json.JSONObject;
 import java.util.*;
 
 /**
- * Holds a class for parsing
+ * Holds a class for parsing a Subsystem Map
  * Really representation of the map, holds package, imports, and fields as Fielders
+ * @see Inner
  */
 public class Classer {
     /**
@@ -35,8 +36,12 @@ public class Classer {
     protected String name;
 
     /**
-     * constructs a Classer based on its source code.
-     * @param source the JavaClassSource representing this Classer's source
+     * Creates a class representing one of the Subsystem Maps, which holds configuration for the Robots Subsystems. <br/>
+     * All classes stored in here should be subclasses of RobotMap or be RobotMap itself. <br/>
+     * RobotMap should be the only Classer with a null parent.
+     * @param source the JavaClassSource for parsing this Classer's class's source
+     * @param parent the Classer representing the superclass of this Classer's class
+     * @see Inner
      */
     public Classer(JavaClassSource source, Classer parent) {
         this.name = source.getName();
@@ -44,44 +49,59 @@ public class Classer {
         this.inners = new HashMap<>();
         this.components = new HashMap<>();
         this.parent = parent;
-        if (this.parent != null) {
+        if (this.parent != null) { // register with the parent so toJson works
             this.parent.children.put(name, this);
         }
 
-        System.out.println(name);
+        // get all the fields in
         List<FieldSource<JavaClassSource>> flds = source.getFields();
         for (FieldSource<JavaClassSource> f : flds) {
             String type = f.getType().getName();
             type = type.substring(type.lastIndexOf(".")+1);
             this.components.put(f.getName(), type);
-            System.out.println(f.getName() + " " + type);
         }
-        System.out.println();
 
+        // find all of the inner classes, aka the MapObjects for components
         List<JavaSource<?>> inrs = source.getNestedTypes();
-        Map<String, JavaClassSource> inrsMap = new HashMap<>();
+        Map<String, JavaClassSource> inrsMap = new HashMap<>(); // this will hold the inner classes that were not handles as of yet
         for (JavaSource<?> inr : inrs) {
             inrsMap.put(inr.getName(), (JavaClassSource) inr);
         }
-        if (inrsMap.containsKey("MapObject")) {
+        if (inrsMap.containsKey("MapObject")) { // we should have a reference to MapObject somehwere, but if it's not here  it could be in a superclass
             this.inners.put("MapObject", new Inner(inrsMap.remove("MapObject"), null, this));
         }
 
-        while (!inrsMap.keySet().isEmpty()) {
+        while (!inrsMap.keySet().isEmpty()) { // keep going until we run out of inner classes
+            // we need to start at some key, and for some reason Sets can't do that, so we're making an ArrayList for the keys to pick one out
             List<String> keys = new ArrayList<>();
             keys.addAll(inrsMap.keySet());
             String key = keys.get(0);
+            // cool we got a key, now to see what its superclass is
             String next = inrsMap.get(key).getSuperType();
             next = next.substring(next.lastIndexOf(".")+1);
+            // alright got the subclass name
+            // now to find out if we already parsed its superclass
             while (!getInners().containsKey(next)) {
+                // now we keep going up in the hierarchy until we find a class whose superclass is already parsed (should
+                // always terminate since RobotMap is the super of all Subsystem Maps, and RobotMap will hold MapObject, superclass
+                // of all inners
                 key = next;
                 next = inrsMap.get(key).getSuperType();
                 next = next.substring(next.lastIndexOf(".")+1);
             }
-            this.inners.put(key, new Inner(inrsMap.remove(key), getInners().get(next), this));
+            // "next" is now the key to the parent of the value for "key" in getInners()
+            this.inners.put(key, new Inner(inrsMap.remove(key), getInners().get(next), this)); // parse the class associated with "key" and tell it that its super is "next" and elncloser is this object
         }
     }
 
+    /**
+     * Gets a map of the inner classes in this Subsystem Map class, and by all of its parent classes by creating an empty map,
+     * filling it with this class's inner classes, and calls this method on the parent, if the parent exists. <br/>
+     * This fakes inheritance of inner classes for classes
+     * @return a Map of the inner classes, indexed by the inner classes' names
+     * @see Inner#getComponents()
+     * @see Inner
+     */
     protected Map<String, Inner> getInners() {
         Map<String, Inner> map = new HashMap<>();
         map.putAll(this.inners);
@@ -92,6 +112,22 @@ public class Classer {
         return map;
     }
 
+    /**
+     * creates a JSONObject based on the contents of this Subsystem Map
+     * <br/><code>{</code>
+     * <br/><code>  "child-name": {//the component's bean},</code>
+     * <br/><code>  "components": {}</code>
+     * <br/><code>}</code>
+     * <br/> where <code>child-name</code> is the name of a subclass of this Map and <code>components</code> holds the beans
+     * of the fields for this Subsystem Map
+     * <br/> this creates the most verbose tree possible
+     * <br/> if the component is a primitive (specifically <code>int</code>, <code>double</code> and <code>boolean</code>)
+     * the bean object is simply replaced by a string of the primitive (eg <code>"int"</code> for an <code>int</code>)
+     * @return a JSONObject
+     * @throws JSONException if somehow formatting broke. which should ever happen
+     * @see Inner#toJson()
+     * @see Inner
+     */
     protected JSONObject toJson() throws JSONException {
         JSONObject jo = new JSONObject();
         Set<String> childKeys = children.keySet();
