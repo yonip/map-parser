@@ -14,10 +14,12 @@ import java.util.regex.Pattern;
  * Main class. Includes all functionality for parsing the file
  */
 public class Parser {
+    // TODO make this depend on where the built .jar is
+    // TODO check that this is looking at a RobotProject
     public static String path = "/Users/yonipedersen/Documents/Robotics/robotics-2016/src";
-    public static PrintStream writer;
 
     public static void main(String[] args) {
+        PrintStream writer = null;
         try {
             writer = new PrintStream("src/main/resources/cfg.json");
         } catch (IOException e) {
