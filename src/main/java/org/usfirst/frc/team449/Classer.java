@@ -81,16 +81,24 @@ public class Classer {
             next = next.substring(next.lastIndexOf(".")+1);
             // alright got the subclass name
             // now to find out if we already parsed its superclass
-            while (!getInners().containsKey(next)) {
+            while (!getParsedInners().containsKey(next)) { // while the superclass isn't one of the classes we parsed
+                // maybe we didn't parse it because we can't? (doesn't extend MapObject)
+                if (!inrsMap.containsKey(next)) {
+                    break; // we can't parse this, bail
+                }
                 // now we keep going up in the hierarchy until we find a class whose superclass is already parsed (should
                 // always terminate since RobotMap is the super of all Subsystem Maps, and RobotMap will hold MapObject, superclass
                 // of all inners
                 key = next;
                 next = inrsMap.get(key).getSuperType();
-                next = next.substring(next.lastIndexOf(".")+1);
+                next = next.substring(next.lastIndexOf(".") + 1);
             }
-            // "next" is now the key to the parent of the value for "key" in getInners()
-            this.inners.put(key, new Inner(inrsMap.remove(key), getInners().get(next), this)); // parse the class associated with "key" and tell it that its super is "next" and elncloser is this object
+            if (!inrsMap.containsKey(next) && !getParsedInners().containsKey(next)) { // we cannot parse this object since it doesn't extend MapObject, so get rid of it and try another
+                inrsMap.remove(key);
+                continue;
+            }
+            // "next" is now the key to the parent of the value for "key" in getParsedInners()
+            this.inners.put(key, new Inner(inrsMap.remove(key), getParsedInners().get(next), this)); // parse the class associated with "key" and tell it that its super is "next" and elncloser is this object
         }
     }
 
@@ -102,13 +110,13 @@ public class Classer {
      * @see Inner#getComponents()
      * @see Inner
      */
-    protected Map<String, Inner> getInners() {
+    protected Map<String, Inner> getParsedInners() {
         Map<String, Inner> map = new HashMap<>();
         map.putAll(this.inners);
         if (parent == null) {
             return map;
         }
-        map.putAll(parent.getInners());
+        map.putAll(parent.getParsedInners());
         return map;
     }
 
@@ -142,11 +150,11 @@ public class Classer {
                 compObj.put(key, type);
             } else {
                 if (!compObj.has(type)) {
-                    compObj.put(type, getInners().get(type).toJson());
+                    compObj.put(type, getParsedInners().get(type).toJson());
                     compObj.getJSONObject(type).put("instances", new JSONObject());
                 }
                 JSONObject inst = compObj.getJSONObject(type).getJSONObject("instances");
-                inst.put(key, getInners().get(type).toJson());
+                inst.put(key, getParsedInners().get(type).toJson());
 
             }
         }

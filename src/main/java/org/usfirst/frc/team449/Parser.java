@@ -103,9 +103,6 @@ public class Parser {
         Map<String, File> map = mapFiles(file); // get a map of all the files nested in the given file
         Map<String, File> ret = new HashMap<>();
         for (String name : map.keySet()) {
-            if (name.equals("OIMap.java")) { // exclude OIMap because it doesnt extend RobotMap so it breaks some things as it stands
-                continue;
-            }
             Pattern mapPattern = Pattern.compile("(\\w+Map)(?=\\.java)"); // look for something composed of word characters with Map.java after them
             Matcher mapMatcher = mapPattern.matcher(name);
             int start;
